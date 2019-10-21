@@ -14,6 +14,9 @@ extern ListHead waiting_list; // list of the waiting processes
 extern ListHead zombie_list;  // zombies
 extern ListHead resources_list; // resources
 
+//making the semaphore list visible for all processes
+extern ListHead semaphores_list;
+
 extern ListHead timer_list;     //timers (concrete)
 extern volatile int disastrOS_time; //global time of disastrOS
 

@@ -28,6 +28,11 @@ void disastrOS_preempt();
 void disastrOS_spawn(void (*f)(void*), void* args );
 void disastrOS_shutdown();
 
+int DisastrOS_semOpen(int semnum);
+int DisastrOS_semClose(int semnum);
+int DisastrOS_semWait(int semnum);
+int DisastrOS_semPost(int semnum);
+
 // timers
 void disastrOS_sleep(int);
 
