@@ -122,6 +122,7 @@ void disastrOS_trap(){
   }
  
   disastrOS_debug("syscall: %d, pid: %d\n", syscall_num, running->pid);
+  //here we are executing the function in the interrupt vector
   (*syscall_vector[syscall_num])();
   //internal_schedule();
  return_to_process:
@@ -145,7 +146,11 @@ void disastrOS_start(void (*f)(void*), void* f_args, char* logfile){
   PCB_init();
   Timer_init();
   Resource_init();
+  //initializing the structures 
   Descriptor_init();
+  Semaphore_init();
+  SemDescriptor_init();
+  
   init_pcb=0;
 
   // populate the vector of syscalls and number of arguments for each syscall
@@ -190,7 +195,7 @@ void disastrOS_start(void (*f)(void*), void* f_args, char* logfile){
   syscall_numarg[DSOS_CALL_SEMCLOSE]      = 1;
 
   syscall_vector[DSOS_CALL_SEMPOST]      = internal_semPost;
-  syscall_numarg[DSOS_CALL_SEMPOST]      = 2;
+  syscall_numarg[DSOS_CALL_SEMPOST]      = 1;
 
   syscall_vector[DSOS_CALL_SEMWAIT]      = internal_semWait;
   syscall_numarg[DSOS_CALL_SEMWAIT]      = 1;
@@ -257,6 +262,23 @@ void disastrOS_start(void (*f)(void*), void* f_args, char* logfile){
     fprintf(log_file, "TIME: %d\tPID: -1\tACTION: START\n", disastrOS_time);
   }
   setcontext(&running->cpu_state);
+}
+//implement the syscalls in the SO
+
+int DisastrOS_semOpen(int semnum){
+	return disastrOS_syscall(DSOS_CALL_SEMOPEN,semnum);
+}
+
+int DisastrOS_semClose(int semnum){
+	return disastrOS_syscall(DSOS_CALL_SEMCLOSE,semnum);
+}
+
+int DisastrOS_semWait(int semnum){
+	return disastrOS_syscall(DSOS_CALL_SEMWAIT,semnum);
+}
+
+int DisastrOS_semPost(int semnum){
+	return disastrOS_syscall(DSOS_CALL_SEMPOST,semnum);
 }
 
 int disastrOS_fork(){
