@@ -13,15 +13,18 @@ void internal_semOpen(){
 
 int semnum = running->syscall_args[0];
 
-if(semaphores_list.size >=MAX_NUM_SEMAPHORES)
-	running->syscall_retvalue = DSOS_EMAX_SEM;
-if(running->sem_descriptors.size>=MAX_NUM_DESCRIPTORS_PER_PROCESS)
-	running->syscall_retvalue = DSOS_EMAX_SEM_DES_PRO;
 
 
 if(semnum<0){
 	running->syscall_retvalue = DSOS_INVALID_ID;
-}	
+	return;
+}
+
+if(running->sem_descriptors.size>=MAX_NUM_DESCRIPTORS_PER_PROCESS){
+	running->syscall_retvalue = DSOS_EMAX_SEM_DES_PRO;
+	return;
+}
+
 
 Semaphore* sem = SemaphoreList_byId((SemaphoreList*)&semaphores_list,semnum);
 
@@ -30,6 +33,7 @@ if(!sem){
 	sem = Semaphore_alloc(semnum,1);
 	if(!sem){
 		running->syscall_retvalue = DSOS_ESEM_ALLOC;
+		return;
 	}
 	
 	

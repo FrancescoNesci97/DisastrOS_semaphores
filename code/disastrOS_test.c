@@ -21,7 +21,40 @@ void childFunction(void* args){
   int fd=disastrOS_openResource(disastrOS_getpid(),type,mode);
   printf("fd=%d\n", fd);
   printf("PID: %d, terminating\n", disastrOS_getpid());
-
+  if(disastrOS_getpid()==2){
+  	printf("*****testing the invalid id error******\n");
+  	int ret = DisastrOS_semOpen(-1);
+  	printf("error:%d\n",ret);
+  	printf("*****testing the invalid id error******\n");
+  }
+  if(disastrOS_getpid()==3){
+  	printf("*****testing the max number of semaphores_descriptor error******\n");
+	int ret;
+  	for(int i=0;i<=MAX_NUM_DESCRIPTORS_PER_PROCESS;i++)
+		ret = DisastrOS_semOpen(i);
+	printf("error:%d\n",ret);	
+  	printf("*****testing the max number of semaphores_descriptor error******\n");
+	
+  }
+  
+  if(disastrOS_getpid()==4){
+	printf("*****testing the not existing descriptor error******\n");
+  	int ret = DisastrOS_semWait(5);
+  	printf("semWait error:%d\n",ret);
+	ret = DisastrOS_semPost(19);
+  	printf("semPost error:%d\n",ret);
+  	printf("*****testing the not existing descriptor error******\n");
+   }
+   if(disastrOS_getpid()==5){
+	printf("*****testing the invalid descriptor error******\n");
+  	int ret = DisastrOS_semWait(-3);
+  	printf("semWait error:%d\n",ret);
+	ret = DisastrOS_semPost(-8);
+  	printf("semPost error:%d\n",ret);
+  	printf("*****testing the invalid descriptor error******\n");
+   }
+	
+	
   for (int i=0; i<(disastrOS_getpid()+1); ++i){
     printf("PID: %d, iterate %d\n", disastrOS_getpid(), i);
     disastrOS_sleep((20-disastrOS_getpid())*5);

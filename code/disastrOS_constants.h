@@ -32,13 +32,12 @@
 
 #define DSOS_INVALID_ID -14
 #define DSOS_ESEM_ALLOC -15
-#define DSOS_EMAX_SEM -16
-#define DSOS_ESEM_DES_ALLOC -17
-#define DSOS_ESEM_DES_PTR_ALLOC -18
-#define DSOS_EMAX_SEM_DES_PRO -19
+#define DSOS_ESEM_DES_ALLOC -16
+#define DSOS_ESEM_DES_PTR_ALLOC -17
+#define DSOS_EMAX_SEM_DES_PRO -18
 
-#define DSOS_EINVALID_FD -20
-#define DSOS_ENO_DES -21
+#define DSOS_EINVALID_FD -19
+#define DSOS_ENO_DES -20
 
 // syscall numbers
 #define DSOS_MAX_SYSCALLS 32
