@@ -21,17 +21,28 @@ void internal_semClose(){
 		running->syscall_retvalue = DSOS_ENO_DES;
 		return;
 	}
+	
 	SemDescriptorPtr* sem_des_ptr = sem_des->ptr;
 	
+	Semaphore* sem = sem_des->semaphore;
+	
 	List_detach(&(sem_des->semaphore->descriptors),(ListItem*)sem_des_ptr);
-		
+	
 	SemDescriptorPtr_free(sem_des_ptr);
 	
 	List_detach(&(running->sem_descriptors),(ListItem*)sem_des);
 	
 	SemDescriptor_free(sem_des);
-
+	
 	running->syscall_retvalue = 0;
+
+	//if there is no process using it i can destroy the semaphore
+	if(sem->descriptors.size==0){
+	
+		List_detach(&semaphores_list,(ListItem*)sem);
+		Semaphore_free(sem);
+
+	}
 	return;
 	
 	

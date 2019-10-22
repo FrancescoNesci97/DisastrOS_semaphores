@@ -57,6 +57,8 @@ List_insert(&(running->sem_descriptors),running->sem_descriptors.last,(ListItem*
 
 List_insert(&(sem->descriptors),(sem->descriptors).last,(ListItem*)sem_des_ptr);
 
+sem_des->ptr = sem_des_ptr;
+
 running->syscall_retvalue = sem_des->fd;
 return;
 
