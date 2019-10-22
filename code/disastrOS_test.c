@@ -62,11 +62,19 @@ void childFunction(void* args){
   	printf("*****testing the invalid descriptor error******\n");
    }
 	
-	
+  int sem = DisastrOS_semOpen(0);
+  DisastrOS_semWait(sem);
+  //critical section->the output will show that each cycle of each process will be shown all in one  
   for (int i=0; i<(disastrOS_getpid()+1); ++i){
     printf("PID: %d, iterate %d\n", disastrOS_getpid(), i);
-    disastrOS_sleep((20-disastrOS_getpid())*5);
+    disastrOS_sleep((20-disastrOS_getpid()));
+    cs_number=cs_number+1;
   }
+  //critical section
+  DisastrOS_semPost(sem);
+
+  DisastrOS_semClose(sem);
+
   disastrOS_exit(disastrOS_getpid()+1);
 }
 
@@ -100,6 +108,7 @@ void initFunction(void* args) {
     --alive_children;
   }
   printf("shutdown!");
+  printf("the value of the cs number is:%d! and it must be 75!\n",cs_number); 
   disastrOS_shutdown();
 }
 

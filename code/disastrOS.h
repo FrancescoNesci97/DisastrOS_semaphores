@@ -13,6 +13,10 @@
 
 #endif //_DISASTROS_DEBUG_
 
+int cs_number;
+
+
+
 // initializes the structures and spawns a fake init process
 void disastrOS_start(void (*f)(void*), void* args, char* logfile);
 
