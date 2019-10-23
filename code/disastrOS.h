@@ -13,7 +13,8 @@
 
 #endif //_DISASTROS_DEBUG_
 
-int cs_number;
+int cs_number1;
+int cs_number2;
 
 
 

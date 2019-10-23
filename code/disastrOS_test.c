@@ -61,17 +61,34 @@ void childFunction(void* args){
   	printf("semClose error:%d\n",ret);
   	printf("*****testing the invalid descriptor error******\n");
    }
+   if(disastrOS_getpid()==6){
+	printf("*****testing the creation of two descriptors for the same semaphore in the same process******\n");
+  	int first = DisastrOS_semOpen(25);
+	int second = DisastrOS_semOpen(25);
+	printf("*****In the status we should see only one semaphore with id 25, with 2 different descriptors for the same semaphore and with the same pid process******\n");
+	disastrOS_printStatus();
+	DisastrOS_semClose(first);
+	DisastrOS_semClose(second);
+	printf("we should  have closed the descriptor and destroyed the semaphore with the last sem_close\n");
+	disastrOS_printStatus();
+   }
 	
-  int sem = DisastrOS_semOpen(0);
-  DisastrOS_semWait(sem);
-  //critical section->the output will show that each cycle of each process will be shown all in one  
+	
+  int sem = DisastrOS_semOpen(0); 
   for (int i=0; i<(disastrOS_getpid()+1); ++i){
     printf("PID: %d, iterate %d\n", disastrOS_getpid(), i);
+    //sleep decreased because it took too much time to finish
+    int ctrl = cs_number1+1;
     disastrOS_sleep((20-disastrOS_getpid()));
-    cs_number=cs_number+1;
+    cs_number1=ctrl;
+    //critical section
+    DisastrOS_semWait(sem);
+    int ctrl1 = cs_number2+1;
+    disastrOS_sleep((20-disastrOS_getpid()));
+    cs_number2=ctrl1;
+    DisastrOS_semPost(sem);
+    //critical section
   }
-  //critical section
-  DisastrOS_semPost(sem);
 
   DisastrOS_semClose(sem);
 
@@ -108,7 +125,8 @@ void initFunction(void* args) {
     --alive_children;
   }
   printf("shutdown!");
-  printf("the value of the cs number is:%d! and it must be 75!\n",cs_number); 
+  printf("the value of the cs number without semaphores is:%d! and it must be 75!\n",cs_number1); 
+  printf("the value of the cs number2 with semaphores is:%d! and it must be 75!\n",cs_number2); 
   disastrOS_shutdown();
 }
 
